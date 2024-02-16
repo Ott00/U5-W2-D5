@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import otmankarim.U5W2D5.exceptions.BadRequestException;
+import otmankarim.U5W2D5.user.UserMailDTO;
 
 @RestController
 @RequestMapping("/devices")
@@ -41,6 +42,15 @@ public class DeviceController {
             throw new BadRequestException(validation.getAllErrors());
         }
         return this.deviceService.findByIdAndUpdate(id, updatedDevice);
+    }
+
+    @PatchMapping("/{id}/setUser")
+    @ResponseStatus(HttpStatus.OK) // Status Code 200
+    public Device setUser(@PathVariable int id, @RequestBody @Validated UserMailDTO userMailDTO, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
+        return this.deviceService.setUser(id, userMailDTO.email());
     }
 
     @DeleteMapping("/{id}")

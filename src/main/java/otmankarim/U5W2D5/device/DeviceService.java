@@ -8,11 +8,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import otmankarim.U5W2D5.exceptions.BadRequestException;
 import otmankarim.U5W2D5.exceptions.NotFoundException;
+import otmankarim.U5W2D5.user.User;
+import otmankarim.U5W2D5.user.UserDAO;
 
 @Service
 public class DeviceService {
     @Autowired
     private DeviceDAO deviceDAO;
+    @Autowired
+    private UserDAO userDAO;
 
     public Page<Device> getDevices(int pageNumber, int size, String orderBy) {
         if (size > 100) size = 100;
@@ -36,6 +40,14 @@ public class DeviceService {
         Device found = this.findById(id);
         found.setDeviceStatus(getDeviceStatus(updatedDevice));
         found.setDeviceType(getDeviceType(updatedDevice));
+        return deviceDAO.save(found);
+    }
+
+    public Device setUser(long id, String userEmail) {
+        User user = userDAO.findByEmail(userEmail).orElseThrow(() -> new NotFoundException(userEmail));
+        Device found = findById(id);
+        found.setUser(user);
+        found.setDeviceStatus(DeviceStatus.ASSIGNED);
         return deviceDAO.save(found);
     }
 
@@ -64,7 +76,6 @@ public class DeviceService {
             default:
                 throw new BadRequestException("device type not exist");
         }
-
         return deviceType;
     }
 
