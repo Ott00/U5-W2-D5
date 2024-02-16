@@ -6,10 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import otmankarim.U5W2D5.config.SenderMail;
 import otmankarim.U5W2D5.exceptions.BadRequestException;
 import otmankarim.U5W2D5.exceptions.NotFoundException;
 import otmankarim.U5W2D5.user.User;
 import otmankarim.U5W2D5.user.UserDAO;
+
+import java.io.IOException;
 
 @Service
 public class DeviceService {
@@ -17,6 +20,8 @@ public class DeviceService {
     private DeviceDAO deviceDAO;
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private SenderMail senderMail;
 
     public Page<Device> getDevices(int pageNumber, int size, String orderBy) {
         if (size > 100) size = 100;
@@ -43,11 +48,12 @@ public class DeviceService {
         return deviceDAO.save(found);
     }
 
-    public Device setUser(long id, String userEmail) {
+    public Device setUser(long id, String userEmail) throws IOException {
         User user = userDAO.findByEmail(userEmail).orElseThrow(() -> new NotFoundException(userEmail));
         Device found = findById(id);
         found.setUser(user);
         found.setDeviceStatus(DeviceStatus.ASSIGNED);
+        senderMail.sendRegistrationEmail(userEmail);
         return deviceDAO.save(found);
     }
 
