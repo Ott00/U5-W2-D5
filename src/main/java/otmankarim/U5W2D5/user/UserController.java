@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import otmankarim.U5W2D5.exceptions.BadRequestException;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/users")
@@ -33,6 +36,12 @@ public class UserController {
             throw new BadRequestException(validation.getAllErrors());
         }
         return this.userService.save(newUserDTO);
+    }
+
+    @PatchMapping("/{id}/uploadAvatar")
+    @ResponseStatus(HttpStatus.OK) // Status Code 200
+    public String uploadCover(@PathVariable int id, @RequestParam("avatar") MultipartFile image) throws IOException {
+        return this.userService.uploadImageAndGetUrl(image, id);
     }
 
     @PutMapping("/{id}")

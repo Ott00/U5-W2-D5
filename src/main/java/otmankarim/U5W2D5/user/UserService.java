@@ -1,19 +1,27 @@
 package otmankarim.U5W2D5.user;
 
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import otmankarim.U5W2D5.exceptions.BadRequestException;
 import otmankarim.U5W2D5.exceptions.NotFoundException;
+
+import java.io.IOException;
 
 @Service
 public class UserService {
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private Cloudinary cloudinaryUploader;
 
     public Page<User> getUsers(int pageNumber, int size, String orderBy) {
         if (size > 100) size = 100;
@@ -55,6 +63,14 @@ public class UserService {
 
     public String createAvatarUrl(UserDTO newUserDTO) {
         return "https://ui-avatars.com/api/?name=" + newUserDTO.name() + "+" + newUserDTO.surname();
+    }
+
+    public String uploadImageAndGetUrl(MultipartFile cover, int userId) throws IOException {
+        String urlCover = (String) cloudinaryUploader.uploader().upload(cover.getBytes(), ObjectUtils.emptyMap()).get("url");
+        User found = findById(userId);
+        found.setAvatar(urlCover);
+        userDAO.save(found);
+        return urlCover;
     }
 
 }
