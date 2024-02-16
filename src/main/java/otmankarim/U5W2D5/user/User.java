@@ -1,10 +1,15 @@
 package otmankarim.U5W2D5.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import otmankarim.U5W2D5.device.Device;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +27,9 @@ public class User {
     private String surname;
     private String email;
     private String avatar;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<Device> devices = new HashSet<>();
 
     public User(String username, String name, String surname, String email) {
         this.username = username;

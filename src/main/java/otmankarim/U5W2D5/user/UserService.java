@@ -15,7 +15,7 @@ public class UserService {
     @Autowired
     private UserDAO userDAO;
 
-    public Page<User> getAuthors(int pageNumber, int size, String orderBy) {
+    public Page<User> getUsers(int pageNumber, int size, String orderBy) {
         if (size > 100) size = 100;
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(orderBy));
         return userDAO.findAll(pageable);
