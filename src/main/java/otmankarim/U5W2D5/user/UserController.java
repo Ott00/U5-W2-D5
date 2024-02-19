@@ -29,14 +29,14 @@ public class UserController {
         return this.userService.findById(id);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // Status Code 201
-    public User save(@RequestBody @Validated UserDTO newUserDTO, BindingResult validation) {
-        if (validation.hasErrors()) {
-            throw new BadRequestException(validation.getAllErrors());
-        }
-        return this.userService.save(newUserDTO);
-    }
+//    @PostMapping    // POST Spostata nel AuthController
+//    @ResponseStatus(HttpStatus.CREATED) // Status Code 201
+//    public User save(@RequestBody @Validated UserDTO newUserDTO, BindingResult validation) {
+//        if (validation.hasErrors()) {
+//            throw new BadRequestException(validation.getAllErrors());
+//        }
+//        return this.userService.save(newUserDTO);
+//    }
 
     @PatchMapping("/{id}/uploadAvatar")
     @ResponseStatus(HttpStatus.OK) // Status Code 200

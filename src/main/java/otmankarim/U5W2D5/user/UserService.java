@@ -37,7 +37,8 @@ public class UserService {
                 newUserDTO.username(),
                 newUserDTO.name(),
                 newUserDTO.surname(),
-                newUserDTO.email()
+                newUserDTO.email(),
+                newUserDTO.password()
         );
         user.setAvatar(createAvatarUrl(newUserDTO));
         return userDAO.save(user);
@@ -53,6 +54,7 @@ public class UserService {
         found.setName(updatedUser.name());
         found.setSurname(updatedUser.surname());
         found.setEmail(updatedUser.email());
+        found.setPassword(updatedUser.password());
         return userDAO.save(found);
     }
 
@@ -73,4 +75,7 @@ public class UserService {
         return urlCover;
     }
 
+    public User findByEmail(String email) {
+        return userDAO.findByEmail(email).orElseThrow(() -> new NotFoundException("Email " + email + " non trovata"));
+    }
 }

@@ -16,6 +16,10 @@ public record UserDTO(
         String surname,
         @NotEmpty(message = "email is mandatory")
         @Email(message = "email is not valid")
-        String email
+        String email,
+
+        @NotEmpty(message = "password is mandatory")
+        @Size(min = 8, message = "name must be at least 8 characters")
+        String password
 ) {
 }
