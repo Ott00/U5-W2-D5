@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import otmankarim.U5W2D5.exceptions.BadRequestException;
@@ -19,7 +20,8 @@ import java.io.IOException;
 public class UserService {
     @Autowired
     private UserDAO userDAO;
-
+    @Autowired
+    private PasswordEncoder bcrypt;
     @Autowired
     private Cloudinary cloudinaryUploader;
 
@@ -38,7 +40,7 @@ public class UserService {
                 newUserDTO.name(),
                 newUserDTO.surname(),
                 newUserDTO.email(),
-                newUserDTO.password()
+                bcrypt.encode(newUserDTO.password())
         );
         user.setAvatar(createAvatarUrl(newUserDTO));
         return userDAO.save(user);
@@ -54,7 +56,7 @@ public class UserService {
         found.setName(updatedUser.name());
         found.setSurname(updatedUser.surname());
         found.setEmail(updatedUser.email());
-        found.setPassword(updatedUser.password());
+        found.setPassword(bcrypt.encode(updatedUser.password()));
         return userDAO.save(found);
     }
 

@@ -2,6 +2,7 @@ package otmankarim.U5W2D5.exceptions;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +33,12 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
     public ErrorsPayload handleUnauthorized(NotFoundException ex) {
         return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
+    public ErrorsPayload handleAccessDenied(AccessDeniedException ex) {
+        return new ErrorsPayload("You don't have access to this endpoint!", LocalDateTime.now());
     }
 
     @ExceptionHandler(Exception.class)

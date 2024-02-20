@@ -49,7 +49,7 @@ public class JWTFilter extends OncePerRequestFilter {
         User user = usersService.findById(Long.parseLong(id));
 
         // 4.2 Devo informare Spring Security che l'utente è autenticato (se non faccio questo step riceverò "403 Forbidden Error" come risposta)
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
         // Ci servirà domani per l'AUTORIZZAZIONE
         SecurityContextHolder.getContext().setAuthentication(authentication);
